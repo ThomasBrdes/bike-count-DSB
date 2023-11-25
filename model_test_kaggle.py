@@ -10,9 +10,21 @@ from sklearn.metrics import mean_squared_error
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import make_pipeline
-import problem
+# import problem
 # from submissions.starting_kit.estimator import _encode_dates
-from submissions.external_data.estimator import _encode_dates, _merge_external_data
+# from submissions.external_data.estimator import _encode_dates, _merge_external_data
+
+def _encode_dates(X):
+    X = X.copy()  # modify a copy of X
+    # Encode the date information from the DateOfDeparture columns
+    X.loc[:, "year"] = X["date"].dt.year
+    X.loc[:, "month"] = X["date"].dt.month
+    X.loc[:, "day"] = X["date"].dt.day
+    X.loc[:, "weekday"] = X["date"].dt.weekday
+    X.loc[:, "hour"] = X["date"].dt.hour
+
+    # Finally we can drop the original columns from the dataframe
+    return X.drop(columns=["date"])
 
 def read_data():
 
