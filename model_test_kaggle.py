@@ -14,6 +14,8 @@ from sklearn.pipeline import make_pipeline
 # from submissions.starting_kit.estimator import _encode_dates
 # from submissions.external_data.estimator import _encode_dates, _merge_external_data
 
+
+
 def _encode_dates(X):
     X = X.copy()  # modify a copy of X
     # Encode the date information from the DateOfDeparture columns
@@ -26,10 +28,28 @@ def _encode_dates(X):
     # Finally we can drop the original columns from the dataframe
     return X.drop(columns=["date"])
 
+def _read_data(path, f_name):
+    data = pd.read_parquet(os.path.join(path, "data", f_name))
+    # Sort by date first, so that time based cross-validation would produce correct results
+    data = data.sort_values(["date", "counter_name"])
+    y_array = data[_target_column_name].values
+    X_df = data.drop([_target_column_name, "bike_count"], axis=1)
+    return X_df, y_array
+
+
+def get_train_data(path="."):
+    f_name = "../input/mdsb-2023/train.parquet"
+    return _read_data(path, f_name)
+
+
+def get_test_data(path="."):
+    f_name = "../input/mdsb-2023/test.parquet"
+    return _read_data(path, f_name)
+
 def read_data():
 
-    X_train, y_train = problem.get_train_data()
-    X_test, y_test = problem.get_test_data()
+    X_train, y_train = get_train_data()
+    X_test, y_test = get_test_data()
 
     return X_train, y_train, X_test, y_test
 
@@ -58,16 +78,7 @@ def train_model(X_train, y_train, preprocessor, date_encoder):
     pipe = make_pipeline(date_encoder, preprocessor, regressor)
     pipe.fit(X_train, y_train)
     
-    return pipe
-    
-
-def get_RMSE_local(pipe, X_train, y_train, X_test, y_test):
-    print(
-        f"Train set, RMSE={mean_squared_error(y_train, pipe.predict(X_train), squared=False):.2f}"
-    )
-    print(
-        f"Test set, RMSE={mean_squared_error(y_test, pipe.predict(X_test), squared=False):.2f}"
-    )   
+    return pipe 
 
     
 def submission_kaggle(pipe, X_test):
