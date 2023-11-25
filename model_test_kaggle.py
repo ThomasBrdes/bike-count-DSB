@@ -10,6 +10,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import make_pipeline
+
 # import problem
 # from submissions.starting_kit.estimator import _encode_dates
 # from submissions.external_data.estimator import _encode_dates, _merge_external_data
@@ -29,7 +30,8 @@ def _encode_dates(X):
     return X.drop(columns=["date"])
 
 def _read_data(path, f_name):
-    data = pd.read_parquet(os.path.join(path, "data", f_name))
+    _target_column_name = "log_bike_count"
+    data = pd.read_parquet(f_name)
     # Sort by date first, so that time based cross-validation would produce correct results
     data = data.sort_values(["date", "counter_name"])
     y_array = data[_target_column_name].values
@@ -39,19 +41,29 @@ def _read_data(path, f_name):
 
 def get_train_data(path="."):
     f_name = "../input/mdsb-2023/train.parquet"
-    return _read_data(path, f_name)
+    _target_column_name = "log_bike_count"
+    data = pd.read_parquet(f_name)
+    # Sort by date first, so that time based cross-validation would produce correct results
+    data = data.sort_values(["date", "counter_name"])
+    y_array = data[_target_column_name].values
+    X_df = data.drop([_target_column_name, "bike_count"], axis=1)
+    return X_df, y_array
+
 
 
 def get_test_data(path="."):
-    f_name = "../input/mdsb-2023/test.parquet"
-    return _read_data(path, f_name)
+    f_name = "../input/mdsb-2023/final_test.parquet"
+    data = pd.read_parquet(f_name)
+    # Sort by date first, so that time based cross-validation would produce correct results
+    data = data.sort_values(["date", "counter_name"])
+    return data
 
 def read_data():
 
     X_train, y_train = get_train_data()
-    X_test, y_test = get_test_data()
+    X_test = get_test_data()
 
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_test
 
 
 def preprocessing(X_train):
@@ -93,17 +105,15 @@ def submission_kaggle(pipe, X_test):
     
 
 def main():
+
     # Read data
-    X_train, y_train, X_test, y_test = read_data()
+    X_train, y_train, X_test = read_data()
     
     # Get preprocessor
     preprocessor, date_encoder = preprocessing(X_train)
     
     # train_model
     pipe = train_model(X_train, y_train, preprocessor, date_encoder)
-    
-    # Predict data and get RMSE
-    get_RMSE_local(pipe, X_train, y_train, X_test, y_test)
     
     # Get submission kaggle to csv
     submission_kaggle(pipe, X_test)
