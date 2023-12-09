@@ -20,11 +20,15 @@ def get_final_test_data(path="."):
     # Sort data by date and counter name for correct cross-validation
     data = data.sort_values(["date", "counter_name"])
     return data
-    
+
 def read_original_data():
 
     X_train, y_train = get_train_data()
     X_test, y_test = get_test_data()
+
+    X_train['date'] = pd.to_datetime(X_train['date']).astype('datetime64[us]')
+    X_test['date'] = pd.to_datetime(X_test['date']).astype('datetime64[us]')
+    
 
     return X_train, y_train, X_test, y_test
     
@@ -63,21 +67,22 @@ def _merge_external_data_weather(X):
     X = X.copy()
     # When using merge_asof left frame need to be sorted
     X["orig_index"] = np.arange(X.shape[0])
-    X = pd.merge_asof(
+    X_plus_weather = pd.merge_asof(
         X.sort_values("date"), df_ext[["date", "ff", "u", "ssfrai", "n", "vv", "rr3", "t"]].sort_values("date"), on="date"
     )
     
     # Clean the merged dataframe
-    X['ff'] = X['ff'].fillna(0)
-    X['u'] = X['u'].fillna(0)
-    X['ssfrai'] = X['ssfrai'].fillna(0)
-    X['n'] = X['n'].fillna(0)
-    X['vv'] = X['vv'].fillna(0)
-    X['rr3'] = X['rr3'].fillna(0)
-    X['t'] = X['t'].fillna(0)
+    X_plus_weather['ff'] = X_plus_weather['ff'].fillna(0)
+    X_plus_weather['u'] = X_plus_weather['u'].fillna(0)
+    X_plus_weather['ssfrai'] = X_plus_weather['ssfrai'].fillna(0)
+    X_plus_weather['n'] = X_plus_weather['n'].fillna(0)
+    X_plus_weather['vv'] = X_plus_weather['vv'].fillna(0)
+    X_plus_weather['rr3'] = X_plus_weather['rr3'].fillna(0)
+    X_plus_weather['t'] = X_plus_weather['t'].fillna(0)
     
     # Sort back to the original order
-    X = X.sort_values("orig_index")
+    X_plus_weather = X_plus_weather.sort_values("orig_index")
+    X = X_plus_weather
     del X["orig_index"]
     return X
 
