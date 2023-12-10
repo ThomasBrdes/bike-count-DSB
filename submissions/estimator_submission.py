@@ -1,54 +1,54 @@
-import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import TimeSeriesSplit
+import matplotlib.pyplot as plt
+import sklearn
+from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import mean_squared_error
+from sklearn.compose import ColumnTransformer
+from sklearn.linear_model import Ridge
+from sklearn.pipeline import make_pipeline
+import xgboost as xgb
+from sklearn.preprocessing import StandardScaler
 import holidays
-
-def get_train_data(path="."):
-    f_name = "train.parquet"
-    return _read_original_data(path, f_name)
+import os
+from sklearn.model_selection import TimeSeriesSplit
 
 
-def get_test_data(path="."):
-    f_name = "test.parquet"
-    return _read_original_data(path, f_name)
+####################################################################################################################################
+####################################################################################################################################
+########################-----------------------------------------------------------------------------###############################
+########################---------------- -------------------- DATA ----------------------------------###############################
+########################-----------------------------------------------------------------------------###############################
+####################################################################################################################################
+####################################################################################################################################
+
+
+def get_train_data(f_name):
+    _target_column_name = "log_bike_count"
+    data = pd.read_parquet(f_name)
+    # Sort by date first, so that time based cross-validation would produce correct results
+    data = data.sort_values(["date", "counter_name"])
+    y_array = data[_target_column_name].values
+    X_df = data.drop([_target_column_name, "bike_count"], axis=1)
+    return X_df, y_array
+
 
 def get_final_test_data(path="."):
-    f_name = "final_test.parquet"
+    f_name = "../input/mdsb-2023/final_test.parquet"
     data = pd.read_parquet(os.path.join(path, "data", f_name))
     # Sort data by date and counter name for correct cross-validation
     data = data.sort_values(["date", "counter_name"])
     return data
 
-def read_original_data():
+def read_data():
 
-    X_train, y_train = get_train_data()
-    X_test, y_test = get_test_data()
-
-    X_train['date'] = pd.to_datetime(X_train['date']).astype('datetime64[us]')
-    X_test['date'] = pd.to_datetime(X_test['date']).astype('datetime64[us]')
+    X_train, y_train = get_train_data("../input/mdsb-2023/train.parquet")
+    X_test = get_final_test_data()
     
-
-    return X_train, y_train, X_test, y_test
-    
-def _read_original_data(path, f_name):
-    """
-    Reads and preprocesses data from a parquet file.
-    Input:
-    - path: Directory path where data file is located
-    - f_name: Name of the data file
-    Output:
-    - X_df: Processed feature DataFrame
-    - y_array: Array of target variable values
-    """
-    _target_column_name = "log_bike_count"
-    data = pd.read_parquet(os.path.join(path, "data", f_name))
-    # Sort data by date and counter name for correct cross-validation
-    data = data.sort_values(["date", "counter_name"])
-    y_array = data[_target_column_name].values
-    X_df = data.drop([_target_column_name, "bike_count"], axis=1)
-    return X_df, y_array
+    return X_train, y_train, X_test
 
 
 def _merge_external_data_weather(X):
@@ -60,7 +60,7 @@ def _merge_external_data_weather(X):
     - X: Main DataFrame with merged weather data
     """
     
-    file_path = "data/external_data.csv"
+    file_path = "../input/additional-data/data/external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
     df_ext['date'] = pd.to_datetime(df_ext['date']).astype('datetime64[us]')
     
@@ -192,7 +192,7 @@ def _merge_indicators_COVID(X):
     - X: DataFrame with merged COVID indicators
     """
     
-    file_path = "data/table-indicateurs-open-data-dep-2023-COVID.csv"
+    file_path = "../input/additional-data/data/table-indicateurs-open-data-dep-2023-COVID.csv"
     columns_COVID = ["date", "lib_dep", "hosp", "rea", "incid_rea", "rad"] 
     df_ext = pd.read_csv(file_path, usecols = columns_COVID, parse_dates=["date"])
     df_ext['date'] = pd.to_datetime(df_ext['date']).astype('datetime64[us]')
@@ -248,9 +248,9 @@ def _merge_road_accidents_by_year(year, start_date, end_date):
     columns_VEHICULES = ["Num_Acc", "catv"]
 
     # Read data for CARACTERISTIQUES, USAGERS, and VEHICULES
-    data_CARACT_path = f"data/road accident/caracteristiques-{year}.csv"
-    data_USAGERS_path = f"data/road accident/usagers-{year}.csv"
-    data_VEHICULES_path = f"data/road accident/vehicules-{year}.csv"
+    data_CARACT_path = f"../input/additional-data/data/road accident/caracteristiques-{year}.csv"
+    data_USAGERS_path = f"../input/additional-data/data/road accident/usagers-{year}.csv"
+    data_VEHICULES_path = f"../input/additional-data/data/road accident/vehicules-{year}.csv"
     data_CARACT = pd.read_csv(data_CARACT_path, sep=";", usecols=columns_CARACT)
     data_USAGERS = pd.read_csv(data_USAGERS_path, sep=";", usecols=columns_USAGERS)
     data_VEHICULES = pd.read_csv(data_VEHICULES_path, sep=";", usecols=columns_VEHICULES)
@@ -320,3 +320,154 @@ def _merge_road_accidents(X):
     X.drop(columns =["orig_index"], inplace = True)
 
     return X
+    
+
+def add_external_data(X):
+    
+    X = X.copy()
+    
+    # merge original data + external data
+    merged_X_train_external_DATA = _merge_external_data_weather(X)
+    
+    # merge original data + external data + holidays
+    merged_X_train_external_HOLIDAYS = _merge_holidays_week_end(merged_X_train_external_DATA)
+    
+    # merge original data + external data + holidays + data COVID
+    merged_X_train_external_HOLIDAYS_COVID = _merge_Curfews_lockdowns_COVID(merged_X_train_external_HOLIDAYS)
+    merged_X_train_external_HOLIDAYS_COVID = _merge_indicators_COVID(merged_X_train_external_HOLIDAYS_COVID)
+    
+    # merge original data + external data + holidays + data COVID + data accidents
+    merged_X_train_external_HOLIDAYS_COVID_ACCIDENTS = _merge_road_accidents(merged_X_train_external_HOLIDAYS_COVID)
+
+    return merged_X_train_external_HOLIDAYS_COVID_ACCIDENTS
+    
+
+####################################################################################################################################
+####################################################################################################################################
+########################-----------------------------------------------------------------------------###############################
+########################---------------------------------- PIPELINE ---------------------------------###############################
+########################-----------------------------------------------------------------------------###############################
+####################################################################################################################################
+####################################################################################################################################
+
+def get_estimator():
+    
+    '''
+    Creates a pipe which:
+        (1) performs all the transformations done by the functions merge_external_data() and _encode_dates(),
+        (2) encodes the categorical and numerical data, 
+        (3) performs a XGBOOST regression with tuned parameters.
+
+    Parameters:
+        None
+
+    Returns:
+        pipe (sklearn Pipeline objet): the given pipeline
+    '''
+
+    # Call the merge_external_data function
+    merge_external = FunctionTransformer(add_external_data, validate=False)
+
+    # Call the _encode_dates function to split the date column to several columns
+    date_encoder = FunctionTransformer(_encode_dates)
+    
+    # Encode the final columns
+    categorical_encoder = OneHotEncoder(handle_unknown="ignore")
+    categorical_cols = ["counter_name", 'site_id']
+    numeric_encoder = StandardScaler()
+    numeric_cols = ['t', 'u','rr3', 'is_holiday', 'rea', 'rad', 'hosp', 'year', 'month', 'day', 'weekday', 'hour']
+    
+
+    # Create a ColumnTransformer object to perform all encodings
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("cat", categorical_encoder, categorical_cols),
+            ("numeric", numeric_encoder, numeric_cols)
+        ]
+    )
+    
+    params = {'objective': 'reg:squarederror',
+              'base_score': None,
+              'booster': None,
+              'callbacks': None,
+              'colsample_bylevel': None,
+              'colsample_bynode': None,
+              'colsample_bytree': None,
+              'device': None,
+              'early_stopping_rounds': None,
+              'enable_categorical': False,
+              'eval_metric': None,
+              'feature_types': None,
+              'gamma': 0,
+              'grow_policy': None,
+              'importance_type': None,
+              'interaction_constraints': None,
+              'learning_rate': 0.02,
+              'max_bin': None,
+              'max_cat_threshold': None,
+              'max_cat_to_onehot': None,
+              'max_delta_step': None,
+              'max_depth': 13,
+              'max_leaves': None,
+              'min_child_weight': 5,
+              'monotone_constraints': None,
+              'multi_strategy': None,
+              'n_estimators': 1500,
+              'n_jobs': None,
+              'num_parallel_tree': None,
+              'random_state': None,
+              'reg_alpha': None,
+              'reg_lambda': None,
+              'sampling_method': None,
+              'scale_pos_weight': None,
+              'subsample': 0.7,
+              'tree_method': None,
+              'validate_parameters': None,
+              'verbosity': None,
+              'verbose': True,
+              'early_stopping': True}
+
+    
+    # Create the regressor object 
+    regressor = xgb.XGBRegressor(**params)
+
+    # Create pipeline
+    pipe = make_pipeline(
+        merge_external,
+        date_encoder, 
+        preprocessor, 
+        regressor
+    )
+    
+    return pipe
+    
+    
+def submission_kaggle(model, X_final_test):
+    y_pred = model.predict(X_final_test)
+    print(y_pred)
+    results = pd.DataFrame(
+        dict(
+            Id=X_final_test.index,
+            log_bike_count=y_pred,
+        )
+    )
+    results.to_csv("submission.csv", index=False)
+    
+
+def main():
+
+    # Read data for training
+    X_train, y_train, X_test = read_data()
+
+    # Create pipeline
+    pipe = get_estimator()
+    
+    # Train pipe
+    pipe.fit(X_train, y_train)
+
+    # Predict and create csv submission
+    submission_kaggle(pipe, X_test)
+    
+    
+if __name__ == "__main__":
+    main()

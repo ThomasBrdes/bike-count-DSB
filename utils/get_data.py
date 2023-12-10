@@ -66,7 +66,8 @@ def _merge_external_data_weather(X):
     
     X = X.copy()
     # When using merge_asof left frame need to be sorted
-    original_index = X.index
+    # Reset index
+    X["orig_index"] = np.arange(X.shape[0])
     
     X_plus_weather = pd.merge_asof(
         X.sort_values("date"), df_ext[["date", "ff", "u", "ssfrai", "n", "vv", "rr3", "t"]].sort_values("date"), on="date"
@@ -82,7 +83,8 @@ def _merge_external_data_weather(X):
     X_plus_weather['t'] = X_plus_weather['t'].fillna(0)
     
     # Sort back to the original order
-    X_plus_weather.index = original_index
+    X_plus_weather = X_plus_weather.sort_values("orig_index")
+    X_plus_weather.drop(columns =["orig_index"], inplace = True)
 
     return X_plus_weather
 
@@ -212,7 +214,7 @@ def _merge_indicators_COVID(X):
     
     X = X.copy()
     # When using merge_asof left frame need to be sorted
-    original_index = X.index
+    X["orig_index"] = np.arange(X.shape[0])
     
     X = pd.merge_asof(
         X.sort_values("date"), df_ext[["date", "hosp", "rea", "incid_rea", "rad"]].sort_values("date"), on="date"
@@ -225,7 +227,8 @@ def _merge_indicators_COVID(X):
     X['rad'] = X['rad'].fillna(0)
     
     # Sort back to the original order
-    X.index = original_index
+    X = X.sort_values("orig_index")
+    X.drop(columns =["orig_index"], inplace = True)
 
     return X
 
@@ -304,7 +307,8 @@ def _merge_road_accidents(X):
 
     # Merge with the main DataFrame using merge_asof
     X = X.copy()
-    original_index = X.index
+    # Reset index
+    X["orig_index"] = np.arange(X.shape[0])
     X = pd.merge_asof(X.sort_values("date"), df_accidents[["date", "Max_Grav_accidents", "Count_accidents"]].sort_values("date"), on="date")
     
     # Clean the merged dataframe
@@ -312,6 +316,7 @@ def _merge_road_accidents(X):
     X['Count_accidents'] = X['Count_accidents'].fillna(0)
     
     # Sort back to the original order
-    X.index = original_index
+    X = X.sort_values("orig_index")
+    X.drop(columns =["orig_index"], inplace = True)
 
     return X
