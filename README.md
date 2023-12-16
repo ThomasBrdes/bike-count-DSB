@@ -28,7 +28,7 @@ You can install the dependencies with the following command-line:
 pip install -U -r requirements.txt
 ```
 
-## Files organization
+## Project organization
 
 ### data/
 This folder contains various datasets used for training and evaluating our model. The datasets are organized into separate files, each representing different aspects or sources of data.
@@ -37,6 +37,14 @@ This folder contains various datasets used for training and evaluating our model
 - `external_data.csv` : the weather data given
 - ...
 
+### utils/
+This directory includes utility scripts that support data operations:
+- `get_data.py`: Functions for loading, cleaning, and merging datasets to prepare them for analysis and training.
+
+### submissions/
+Contains Python function modules that are used to format and submit predictions to Kaggle competitions. These functions ensure that submissions adhere to the competition's requirements.
+- `estimator_submission.py`: Python file for submission of our final solution on Kaggle.
+
 ### Notebooks
 Several Jupyter notebooks are available for elaborating strategies, exploratory data analysis, model experimentation, and final model execution:
 - `Metadata_stategy.ipynb`: For presenting metadata from each datasets used and collaborate on strategies
@@ -44,15 +52,6 @@ Several Jupyter notebooks are available for elaborating strategies, exploratory 
 - `model_tuning.ipynb`: Used to fine-tune the model's hyperparameters.
 - `Training_model.ipynb`: For merging all data, preprocess it, testing it on different models and visualize final results.
 - `Training_model_pipeline_final.ipynb`: Pipeline of the best model obtained from `Training_model.ipynb` with predictions of final test dataset.
-
-### `submissions/`
-Contains Python function modules that are used to format and submit predictions to Kaggle competitions. These functions ensure that submissions adhere to the competition's requirements.
-- `estimator_submission.py`: Python file for submission of our final solution on Kaggle.
-
-### utils/
-This directory includes utility scripts that support data operations:
-- `get_data.py`: Functions for loading, cleaning, and merging datasets to prepare them for analysis and training.
-
 
 ### Submissions
 
