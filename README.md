@@ -1,4 +1,4 @@
-# Starting kit on the bike counters dataset
+# Bike counters Paris Project
 
 ![GH Actions](https://github.com/ramp-kits/bike_counters/actions/workflows/main.yml/badge.svg)
 
