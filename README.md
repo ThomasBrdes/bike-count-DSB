@@ -16,9 +16,6 @@ Note that the `test.parquet` file is different from the actual `final_test.parqu
 
 ### Install
 
-To run the notebook you will need the dependencies listed
-in `requirements.txt`. 
-
 It is recommended to create a new virtual environement for this project. For instance, with conda,
 ```bash
 conda create -n bikes-count python=3.10
@@ -41,28 +38,24 @@ This folder contains various datasets used for training and evaluating our model
 
 ### Notebooks
 Several Jupyter notebooks are available for elaborating strategies, exploratory data analysis, model experimentation, and final model execution:
-- `bike_counters_starting_kit.ipynb` : Initial file given to explore data
 - `Metadata_stategy.ipynb`: For presenting metadata from each datasets used and collaborate on strategies
-- `Data_exploration.ipynb`: For initial exploration and visualization of the datasets.
+- `Data_exploration.ipynb`: For initial exploration and visualization of the datasets and external datasets.
 - `model_tuning.ipynb`: Used to fine-tune the model's hyperparameters.
-- `Training_model.ipynb`: Executes the final model training and prediction pipeline.
+- `Training_model.ipynb`: For merging all data, preprocess it, testing it on different models and visualize final results.
+- `Training_model_pipeline_final.ipynb`: Pipeline of the best model obtained from `Training_model.ipynb` with predictions of final test dataset.
 
 ### `submissions/`
 Contains Python function modules that are used to format and submit predictions to Kaggle competitions. These functions ensure that submissions adhere to the competition's requirements.
+- `estimator_submission.py`: Python file for submission of our final solution on Kaggle.
 
 ### `utils/`
 This directory includes utility scripts that support data operations:
-- `get_data.py`: Functions for loading, cleaning, and merging datasets to prepare them for analysis.
-- `training_utilities.py`: Functions dedicated to configuring, training, and evaluating the machine learning model.
-
-
+- `get_data.py`: Functions for loading, cleaning, and merging datasets to prepare them for analysis and training.
 
 
 ### Submissions
 
-Upload your script file `.py` to Kaggle using the Kaggle interface directly.
-The platform will then execute your code to generate your submission csv file, and compute your score.
-Note that your submission .csv file must have the columns "Id" and "bike_log_count", and be of the same length as `final_test.parquet`.
+We worked first with python file for submission on kaggle then switched to local creation of the csv. We forgot to switch back to the original method preferred by the challenge. The file `estimator_submission.py` contains what should have been put in the kaggle challenge.
 
 ## Authors
 
