@@ -28,8 +28,9 @@ You can install the dependencies with the following command-line:
 pip install -U -r requirements.txt
 ```
 
+## Files organization
 
-### `data/`
+### data/
 This folder contains various datasets used for training and evaluating our model. The datasets are organized into separate files, each representing different aspects or sources of data.
 - `train.parquet` : the original train data given
 - `test.parquet` : the original test data given
@@ -48,7 +49,7 @@ Several Jupyter notebooks are available for elaborating strategies, exploratory 
 Contains Python function modules that are used to format and submit predictions to Kaggle competitions. These functions ensure that submissions adhere to the competition's requirements.
 - `estimator_submission.py`: Python file for submission of our final solution on Kaggle.
 
-### `utils/`
+### utils/
 This directory includes utility scripts that support data operations:
 - `get_data.py`: Functions for loading, cleaning, and merging datasets to prepare them for analysis and training.
 
