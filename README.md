@@ -44,6 +44,7 @@ This directory includes utility scripts that support data operations:
 ### submissions/
 Contains Python function modules that are used to format and submit predictions to Kaggle competitions. These functions ensure that submissions adhere to the competition's requirements.
 - `estimator_submission.py`: Python file for submission of our final solution on Kaggle.
+- `Alexandre_Brun_Thomas_Bordes_bike_count_2023.pdf`: latex report of our project.
 
 ### Notebooks
 Several Jupyter notebooks are available for elaborating strategies, exploratory data analysis, model experimentation, and final model execution:
