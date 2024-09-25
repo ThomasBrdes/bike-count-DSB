@@ -1,64 +1,72 @@
-# Bike counters Paris Project
+# 🚴‍♂️ Bike Counters Paris Project
 
 ![GH Actions](https://github.com/ramp-kits/bike_counters/actions/workflows/main.yml/badge.svg)
 
-## Getting started
+Welcome to the **Bike Counters Paris Project**! This project focuses on analyzing bicycle traffic in Paris, leveraging both historical bike counter data and external data sources like weather conditions. Below, you'll find everything you need to get started with the project, including setup instructions, data details, and project organization.
 
-### Download the data,
+---
 
-Download the data files,
- - [train.parquet](https://github.com/ramp-kits/bike_counters/releases/download/v0.1.0/train.parquet)
- - [test.parquet](https://github.com/ramp-kits/bike_counters/releases/download/v0.1.0/test.parquet)
+## 🚀 Getting Started
 
-and put them into into the data folder.
+### 📥 Download the Data
 
-Note that the `test.parquet` file is different from the actual `final_test.parquet` used for the evaluation on Kaggle. This file is just here for convenience.
+The data was downloaded from the links provided in [Bikes_data_strategy.pdf](Bikes_data_strategy.pdf).
 
-### Install
+### 🛠️ Installation
 
-It is recommended to create a new virtual environement for this project. For instance, with conda,
-```bash
-conda create -n bikes-count python=3.10
-y
-```
-
-You can install the dependencies with the following command-line:
+We recommend creating a new virtual environment for this project. If you are using Conda, run the following:
 
 ```bash
-pip install -U -r requirements.txt
+conda env create -f environment.yml
 ```
 
-## Project organization
+## 📁 Project structure
 
-### data/
-This folder contains various datasets used for training and evaluating our model. The datasets are organized into separate files, each representing different aspects or sources of data.
-- `train.parquet` : the original train data given
-- `test.parquet` : the original test data given
-- `external_data.csv` : the weather data given
-- ...
+```bash
+.
+├── data
+        ├── train.parquet                                    # Original training data
+        ├── test.parquet                                     # Original test data
+        ├── external_data.csv                                # Weather data
+        ├── road accident                                    # Road accident data
+            ├── ...
+        ├── table-indicateurs-open-data-dep-2023-COVID.csv   # COVID data
+├── deliverables                                              
+        ├── Alexandre_Brun_Thomas_Bordes_bike_count_2023.pdf # Final repport
+        ├── Bikes_data_strategy.pdf                          # What data are used and why
+        ├── Presentation.pptx                                # Power Point Final presentation
+├── submissions                                              # Code to push results on Kaggle
+        ├── ...       
+├── utils                
+        ├── get_data.py                                      # Python code for merging external data 
+├── Bikes_data_strategy.pdf                                  # Overview of the metadata for each dataset and initial strategy discussions.
 
-### utils/
-This directory includes utility scripts that support data operations:
-- `get_data.py`: Functions for loading, cleaning, and merging datasets to prepare them for analysis and training.
-
-### submissions/
-Contains Python function modules that are used to format and submit predictions to Kaggle competitions. These functions ensure that submissions adhere to the competition's requirements.
-- `estimator_submission.py`: Python file for submission of our final solution on Kaggle.
-- `Alexandre_Brun_Thomas_Bordes_bike_count_2023.pdf`: latex report of our project.
-
-### Notebooks
-Several Jupyter notebooks are available for elaborating strategies, exploratory data analysis, model experimentation, and final model execution:
-- `Metadata_stategy.ipynb`: For presenting metadata from each datasets used and collaborate on strategies
-- `Data_exploration.ipynb`: For initial exploration and visualization of the datasets and external datasets.
-- `model_tuning.ipynb`: Used to fine-tune the model's hyperparameters.
-- `Training_model.ipynb`: For merging all data, preprocess it, testing it on different models and visualize final results.
-- `Training_model_pipeline_final.ipynb`: Pipeline of the best model obtained from `Training_model.ipynb` with predictions of final test dataset.
+├── Training_model.ipynb                                     # End-to-end model training, data merging, preprocessing, and result visualization.
+├── Training_model_pipeline_final.ipynb                      # Pipeline for the best-performing model.
+```
 
 ### Submissions
+Initially, submissions were made using Python scripts, but we later switched to CSV creation for local testing. The `estimator_submission.py` file contains the original method for Kaggle submission, as required by the challenge.
 
-We worked first with python file for submission on kaggle then switched to local creation of the csv. We forgot to switch back to the original method preferred by the challenge. The file `estimator_submission.py` contains what should have been put in the kaggle challenge.
 
-## Authors
+## 📸 Screenshots
 
-**Alexandre Brun** and **Thomas Bordes** using the initial git by teachers of the course **Python for Data Science** from the master Data Science for Business **X - HEC**.
+Main Interface:
 
+## 💻 Tech Stack
+
+- **Python**: Programming language
+- **sklearn - XGBoost**: Deep learning models
+- **Streamlit**: Web framework for building interactive web applications
+
+## 👥 Authors
+
+- **Alexandre Brun**
+- **Thomas Bordes**
+
+This project was built using the initial GitHub repository provided by instructors of the **Python for Data Science** course from the **X - HEC Master’s Program** in Data Science for Business.
+
+## 📚 Acknowledgements
+
+> 🔍 **Code inspired by**: [SkalskiP/yolov8-live](https://github.com/SkalskiP/yolov8-live/tree/master)  
+> 🎨 **Streamlit UI inspired by**: [tyler-simons/BackgroundRemoval](https://github.com/tyler-simons/BackgroundRemoval/tree/main)
