@@ -2,23 +2,7 @@
 
 ![GH Actions](https://github.com/ramp-kits/bike_counters/actions/workflows/main.yml/badge.svg)
 
-Welcome to the **Bike Counters Paris Project**! This project focuses on analyzing bicycle traffic in Paris, leveraging both historical bike counter data and external data sources like weather conditions. Below, you'll find everything you need to get started with the project, including setup instructions, data details, and project organization.
-
----
-
-## 🚀 Getting Started
-
-### 📥 Download the Data
-
-The data was downloaded from the links provided in [Bikes_data_strategy.pdf](Bikes_data_strategy.pdf).
-
-### 🛠️ Installation
-
-We recommend creating a new virtual environment for this project. If you are using Conda, run the following:
-
-```bash
-conda env create -f environment.yml
-```
+Welcome to the **Paris Bike Count Analysis** project! This repository analyzes bicycle traffic 🚴‍♀️🚴‍♂️ in Paris using historical data and external sources (weather ☁️, accidents 🚧, COVID-19 🦠) to predict bike counts across different locations in the city.
 
 ## 📁 Project structure
 
@@ -45,7 +29,42 @@ conda env create -f environment.yml
 ├── Training_model_pipeline_final.ipynb                      # Pipeline for the best-performing model.
 ```
 
-### Submissions
+## ✨ Features
+
+- 🍃 Data Merging: Combine multiple external datasets (weather ☀️, accidents 🚧, etc.) to enhance bike count predictions.
+- 🧠 Model Training: Train machine learning models using scikit-learn, XGBoost, and others to predict bike counts 🚴‍♂️.
+- 📊 Prediction Visualization: Generate detailed visualizations 📈 for bike count predictions.
+
+## 🚀 Quick Start
+
+Follow these instructions to get the project up and running on your local machine.
+
+### 1. Clone the repository:
+
+```bash
+git clone https://github.com/ThomasBrdes/bike-count-DSB.git
+cd bike-count-DSB
+```
+
+### 2. Install env:
+
+```bash
+conda env create -f environment.yml
+conda activate bikes-count
+```
+
+### 3. Launch Jupyter:
+
+```bash
+jupyter notebook
+```
+
+## 📥 Download the Data
+
+The data was downloaded from the links provided in [Bikes_data_strategy.pdf](Bikes_data_strategy.pdf).
+
+
+## Submissions
 Initially, submissions were made using Python scripts, but we later switched to CSV creation for local testing. The `estimator_submission.py` file contains the original method for Kaggle submission, as required by the challenge.
 
 
@@ -53,18 +72,18 @@ Initially, submissions were made using Python scripts, but we later switched to 
 
 Main Interface:
 
-## 💻 Tech Stack
+## 🛠️ Tech Stack
 
-- **Python**: Programming language
-- **sklearn - XGBoost**: Deep learning models
-- **Streamlit**: Web framework for building interactive web applications
+- **Python** 🐍: Programming language
+- **scikit-learn - XGBoost** 🤖: For training and predictions.
+- **Streamlit** 🖥️: Web framework for building interactive web applications
 
-## 👥 Authors
+## 👥Authors
 
-- **Alexandre Brun**
-- **Thomas Bordes**
+ - **Alexandre Brun** 🧑‍💻
+**Thomas Bordes** 🧑‍💻
 
-This project was built using the initial GitHub repository provided by instructors of the **Python for Data Science** course from the **X - HEC Master’s Program** in Data Science for Business.
+This project is part of the Python for Data Science course from the **X-HEC Master’s Program** 🏫.
 
 ## 📚 Acknowledgements
 
