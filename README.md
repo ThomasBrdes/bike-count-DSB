@@ -14,11 +14,15 @@ Welcome to the **Paris Bike Count Analysis** project! This repository analyzes b
         ├── external_data.csv                                # Weather data
         ├── road accident                                    # Road accident data
             ├── ...
+        ├── bike_map                                         # Map bike data
+            ├── ...
         ├── table-indicateurs-open-data-dep-2023-COVID.csv   # COVID data
+├── img                                                        
 ├── deliverables                                              
         ├── Alexandre_Brun_Thomas_Bordes_bike_count_2023.pdf # Final repport
         ├── Bikes_data_strategy.pdf                          # What data are used and why
         ├── Presentation.pptx                                # Power Point Final presentation
+        ├── paris_map_combined.html                          # Map that illustrates predicted bike count over real bike count
 ├── submissions                                              # Code to push results on Kaggle
         ├── ...       
 ├── utils                
@@ -27,13 +31,14 @@ Welcome to the **Paris Bike Count Analysis** project! This repository analyzes b
 
 ├── Training_model.ipynb                                     # End-to-end model training, data merging, preprocessing, and result visualization.
 ├── Training_model_pipeline_final.ipynb                      # Pipeline for the best-performing model.
+├── bike_counter_map.ipynb                                   # Create map to illustrate bike count original and predicted.
 ```
 
 ## ✨ Features
 
 - 🍃 Data Merging: Combine multiple external datasets (weather ☀️, accidents 🚧, etc.) to enhance bike count predictions.
 - 🧠 Model Training: Train machine learning models using scikit-learn, XGBoost, and others to predict bike counts 🚴‍♂️.
-- 📊 Prediction Visualization: Generate detailed visualizations 📈 for bike count predictions.
+- 📊 Prediction Visualization: Generate detailed visualizations 📈 for bike count predictions with **folium**.
 
 ## 🚀 Quick Start
 
@@ -59,24 +64,33 @@ conda activate bikes-count
 jupyter notebook
 ```
 
+### 4. Launch the training code with notebook [Training_model.ipynb](Training_model.ipynb)
+
+### 5. Create the bike count map with notebook [bike_counter_map.ipynb](bike_counter_map.ipynb)
+
+This gives [paris_map_combined.html](submissions\paris_map_combined.html).
+
+## 📸 Bike count map
+
+The interactive map [paris_map_combined.html](submissions\paris_map_combined.html) visualizes the bike counters in Paris, showcasing average hourly bike counts across different districts. 🌆 It combines both circle markers and regular markers to highlight individual counter locations and uses a choropleth map to represent the overall bike count distribution across districts. 🌐
+
+### 🛠️ **Features**
+- 📊 **Choropleth Map**: Shows average hourly bike counts by district.
+- 📍 **Circle Markers**: Separate circles for original (🟣 purple) and predicted (🟠 orange) counts.
+- 📌 **Combined Markers**: Display both original and predicted counts when hovered over.
+- 🔀 **Layer Controls**: Toggle between views - Choropleth, Original and Predicted Circle Markers, and Combined Info Markers.
+
+![alt text](img/bike_count_map.png)
+
 ## 📥 Download the Data
 
-The data was downloaded from the links provided in [Bikes_data_strategy.pdf](Bikes_data_strategy.pdf).
-
-
-## Submissions
-Initially, submissions were made using Python scripts, but we later switched to CSV creation for local testing. The `estimator_submission.py` file contains the original method for Kaggle submission, as required by the challenge.
-
-
-## 📸 Screenshots
-
-Main Interface:
+The data was downloaded from the links provided in [Bikes_data_strategy.pdf](deliverables/Bikes_data_strategy.pdf).
 
 ## 🛠️ Tech Stack
 
 - **Python** 🐍: Programming language
 - **scikit-learn - XGBoost** 🤖: For training and predictions.
-- **Streamlit** 🖥️: Web framework for building interactive web applications
+- **Folium** 🖥️: Web framework for building web map
 
 ## 👥Authors
 
@@ -87,5 +101,4 @@ This project is part of the Python for Data Science course from the **X-HEC Mast
 
 ## 📚 Acknowledgements
 
-> 🔍 **Code inspired by**: [SkalskiP/yolov8-live](https://github.com/SkalskiP/yolov8-live/tree/master)  
-> 🎨 **Streamlit UI inspired by**: [tyler-simons/BackgroundRemoval](https://github.com/tyler-simons/BackgroundRemoval/tree/main)
+> 🔍 **Code for bike count map inspired by**: [Li-Hsiang Hsu](https://medium.com/@hsu.lihsiang.esth/bike-counts-in-paris-geospatial-considerations-0aaf312829c1) 
