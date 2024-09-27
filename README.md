@@ -70,6 +70,12 @@ jupyter notebook
 
 This gives [paris_map_combined.html](submissions\paris_map_combined.html).
 
+## 📸 Bike count prediction example
+
+We can visualize the bike count prediction on the `Voie Georges Pompidou SO-NE` here between the 17th August 2021 and 19th August 2021 as an example :
+
+![alt text](img/bike_count_prediction_example.png)
+
 ## 📸 Bike count map
 
 The interactive map [paris_map_combined.html](submissions\paris_map_combined.html) visualizes the bike counters in Paris, showcasing average hourly bike counts across different districts. 🌆 It combines both circle markers and regular markers to highlight individual counter locations and uses a choropleth map to represent the overall bike count distribution across districts. 🌐
